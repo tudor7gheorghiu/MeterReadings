@@ -4,6 +4,6 @@ namespace MeterReadings.Services
 {
     public interface IMeterReadingValidator
     {
-        public ReadingReport ValidateReport(MeterReading reading);
+        public ReadingReport ValidateReport(MeterReading reading, int counter);
     }
 }

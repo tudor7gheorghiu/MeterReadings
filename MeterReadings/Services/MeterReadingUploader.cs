@@ -16,31 +16,50 @@ namespace MeterReadings.Services
             _context = readingsDbContext;
         }
 
-        public async Task<IEnumerable<ReadingReport>> UploadMeterReading(IFormFile file)
+        public async Task<PostReadingResponse> UploadMeterReading(IFormFile file)
         {
             var reports = new List<ReadingReport>();
+            var successful = 0;
+            var failed = 0;
 
+            // Process csv file
             using (var stream = new StreamReader(file.OpenReadStream()))
             {
                 using (var csv = new CsvReader(stream, CultureInfo.InvariantCulture))
                 {
-                    var readings = csv.GetRecords<MeterReading>();
+                    var readings = csv.GetRecords<MeterReadingCSV>();
+                    
+                    // Match csv file line
+                    var counter = 2;
                     foreach (var reading in readings)
                     {
-                        var validation = _validator.ValidateReport(reading);
+                        var readingDb = new MeterReading {
+                            MeterReadingId = reading.AccountId + reading.MeterReadValue + counter,
+                            AccountId = reading.AccountId,  
+                            ReadignValie = reading.MeterReadValue,
+                            ReadingTime = DateTime.Parse(reading.MeterReadingDateTime)
+                        };
+                        var validation = _validator.ValidateReport(readingDb, counter);
                         if (validation.IsValid)
                         {
-                            _context.Add(reading);
+                            _context.Add(readingDb);
+                            successful++;
+                        }
+                        else 
+                        {
+                            failed++;
                         }
 
                         reports.Add(validation);
+                        counter++;
                     }
 
                     await _context.SaveChangesAsync();
                 }
             }
 
-            return reports;
+            return new PostReadingResponse 
+            { Reports = reports, SuccesfulEntries = successful, FailedEntries = failed};
         }
     }
 }

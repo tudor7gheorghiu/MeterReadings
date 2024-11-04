@@ -4,6 +4,6 @@ namespace MeterReadings.Services
 {
     public interface IMeterReadingUploader
     {
-        public Task<IEnumerable<ReadingReport>> UploadMeterReading(IFormFile file);
+        public Task<PostReadingResponse> UploadMeterReading(IFormFile file);
     }
 }

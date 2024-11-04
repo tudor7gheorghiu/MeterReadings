@@ -22,17 +22,24 @@ namespace MeterReadings.Controllers
 
         [HttpPost]
         [Route("meter-reading-uploads")]
-        public async Task<IEnumerable<ReadingReport>> MeterReadingUploads(IFormFile file)
+        public async Task<PostReadingResponse> MeterReadingUploads(IFormFile file)
         {
             if (file == null)
             {
                 _logger.LogError("Please upload a file");
-                return Enumerable.Empty<ReadingReport>();
+                return new PostReadingResponse();
+            }
+            try
+            {
+                var reports = await _uploader.UploadMeterReading(file);
+                return reports;
             }
 
-            var reports = await _uploader.UploadMeterReading(file);
-
-            return reports;
+            catch (Exception ex) 
+            {
+                _logger.LogError($"{ex.Message}", ex);
+                return new PostReadingResponse();
+            }
         }
 
         [HttpPost]
@@ -45,7 +52,15 @@ namespace MeterReadings.Controllers
                 return;
             }
 
-            await _accountsUploader.UploadAccounts(file);
+            try
+            {
+
+                await _accountsUploader.UploadAccounts(file);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message}", ex);
+            }
 
         }
     }

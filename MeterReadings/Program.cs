@@ -1,6 +1,7 @@
 using MeterReadings.DataAccessLayer;
 using MeterReadings.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<ReadingsDbContext>(options => options.UseSqlServer
 builder.Services.AddScoped<IMeterReadingUploader, MeterReadingUploader>();
 builder.Services.AddScoped<IAccountsUploader, AccountsUploader>();
 builder.Services.AddScoped<IMeterReadingValidator, MeterReadingValidator>();
+builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",

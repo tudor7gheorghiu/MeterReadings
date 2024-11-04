@@ -1,8 +1,11 @@
-﻿namespace MeterReadings.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MeterReadings.Models
 {
     public class MeterReading
     {
-        public int Id { get; set; }
+        [Key]
+        public string MeterReadingId { get; set; } = string.Empty;
         public string AccountId { get; set; } = string.Empty;
         public DateTime ReadingTime { get; set; }
         public int ReadignValie { get; set; }

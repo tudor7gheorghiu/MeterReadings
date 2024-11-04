@@ -4,6 +4,7 @@ using MeterReadings.DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeterReadings.Migrations
 {
     [DbContext(typeof(ReadingsDbContext))]
-    partial class ReadingsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241102195132_SecondMigration")]
+    partial class SecondMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +45,6 @@ namespace MeterReadings.Migrations
 
             modelBuilder.Entity("MeterReadings.Models.MeterReading", b =>
                 {
-                    b.Property<string>("MeterReadingId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("AccountId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -54,8 +54,6 @@ namespace MeterReadings.Migrations
 
                     b.Property<DateTime>("ReadingTime")
                         .HasColumnType("datetime2");
-
-                    b.HasKey("MeterReadingId");
 
                     b.ToTable("MeterReadings");
                 });
